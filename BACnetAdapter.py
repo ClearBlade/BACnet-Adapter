@@ -30,7 +30,10 @@ class BACnetAdapter(BIPSimpleApplication):
 
     def send_props_to_platform(self, device, obj, props):
         obj_to_send = {
-            'device': device,
+            'device': {
+                'id': device.id,
+                'source': device.source
+            },
             'object': obj,
             'properties': props
         }
