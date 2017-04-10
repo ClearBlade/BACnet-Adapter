@@ -7,6 +7,10 @@ import sys, argparse
 
 credentials = {}
 
+adapter_version = "1.0"
+
+print "BACnet-Adapter v" + adapter_version
+
 
 def _parse_args(argv):
     parser = argparse.ArgumentParser(description='BACnetAdapter')
