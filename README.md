@@ -1,13 +1,13 @@
-#BACnet Adapter
+# BACnet Adapter
 This adapter is written with python, and provides a simple interface between BACnet devices and MQTT messaging via the ClearBlade platform. It asks all BACnet devices on the network to identify themselves, and then gets all objects and properties for each device, and finally sends that data to the ClearBlade platform via MQTT. All messages are sent to the topic `bacnet/in`.
 
-#Dependencies
+# Dependencies
 - Python 2.7
 - ClearBlade Python SDK (instructions [here](https://github.com/ClearBlade/Python-API))
-- Eclipse Paho Python SDK (instructions [here](https://eclipse.org/paho/clients/python/) )
+- Eclipse Paho Python SDK (instructions [here](https://eclipse.org/paho/clients/python/))
 - BACpypes BACnet Python SDK (instructions [here](http://bacpypes.readthedocs.io/en/latest/?badge=latest))
 
-#Usage
+# Usage
 Before starting the adapter you will need to add an entry to the device table of the system you want to use. When creating the device make sure it is enabled, and allow key authorization. Finally be sure to set a value for the `active_key` column after creation. You will need this, and th device name when starting the adapter.
 
 To start the adapter you simply need to run `python main.py` with the following command line flags:
