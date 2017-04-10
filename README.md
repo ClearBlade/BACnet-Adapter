@@ -22,7 +22,7 @@ To start the adapter you simply need to run `python main.py` with the following 
 |`--platformUrl` (optional)|The URL for the ClearBlade Platform instance you want to use. If not provided, defaults to https://platform.clearblade.com|
 |`--whoisInterval` (optional)|Set the length of time (in seconds) between who is messages. Defaults to 120.
 
-#MQTT Message Format
+# MQTT Message Format
 Here is an example MQTT message sent from the BACnet adapter to the platform.
 
 ```json
