@@ -5,7 +5,7 @@ from bacpypes.service.device import LocalDeviceObject
 
 import sys, argparse
 
-ADAPTER_VERSION = "1.0"
+ADAPTER_VERSION = "1.1"
 
 # When using bacpypes, we are required to register a local device to be able to communicate with other BACnet devices.
 # A name/description of the local BACnet device being registered
