@@ -13,6 +13,8 @@ class BACnetAdapter(BIPSimpleApplication):
         self.who_is_request = None
         self.credentials = args
         self.interval = args["whoisInterval"]
+        self.low_limit = args["lowerDeviceIdLimit"]
+        self.high_limit = args["upperDeviceIdLimit"]
         self.mqtt = None
 
     def request(self, apdu):
@@ -46,7 +48,7 @@ class BACnetAdapter(BIPSimpleApplication):
     def start(self):
         if self.mqtt is None:
             self.mqtt = MQTT(self.credentials)
-        self.who_is(None, None, GlobalBroadcast())
+        self.who_is(self.low_limit, self.high_limit, GlobalBroadcast())
         timer = threading.Timer(self.interval, self.start)
         timer.daemon = True
         timer.start()
