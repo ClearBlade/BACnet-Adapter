@@ -1,7 +1,7 @@
 import threading, json
 from bacpypes.app import BIPSimpleApplication
 from bacpypes.apdu import WhoIsRequest
-from bacpypes.pdu import GlobalBroadcast
+from bacpypes.pdu import GlobalBroadcast, Address
 
 from Device import Device
 from MQTT import MQTT
@@ -16,6 +16,8 @@ class BACnetAdapter(BIPSimpleApplication):
         self.low_limit = args["lowerDeviceIdLimit"]
         self.high_limit = args["upperDeviceIdLimit"]
         self.mqtt = None
+        # todo - create our devices with the provided IPs in the device-config.json file
+        # during device creation we should also get some info on each device, mainly the objectName on the device object
 
     def request(self, apdu):
         if isinstance(apdu, WhoIsRequest):
@@ -34,6 +36,7 @@ class BACnetAdapter(BIPSimpleApplication):
         obj_to_send = {
             'device': {
                 'id': device.id,
+                'name': device.name,
                 'source': device.source
             },
             'object': obj,
@@ -41,6 +44,7 @@ class BACnetAdapter(BIPSimpleApplication):
         }
         try:
             msg = json.dumps(obj_to_send, ensure_ascii=False, default=json_serial)
+            print msg
             self.mqtt.PublishTopic("bacnet/in", str(msg))
         except Exception as e:
             print e
@@ -48,7 +52,8 @@ class BACnetAdapter(BIPSimpleApplication):
     def start(self):
         if self.mqtt is None:
             self.mqtt = MQTT(self.credentials)
-        self.who_is(self.low_limit, self.high_limit, GlobalBroadcast())
+        self.who_is(self.low_limit, self.high_limit, Address("10.16.163.20"))
+        # todo - here we will want to loop through each device we have, and kick off getting all objects and properties for the device
         timer = threading.Timer(self.interval, self.start)
         timer.daemon = True
         timer.start()

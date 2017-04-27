@@ -2,6 +2,7 @@ from bacpypes.apdu import ReadPropertyRequest, ReadPropertyACK
 from bacpypes.constructeddata import ArrayOf
 from bacpypes.iocb import IOCB
 from bacpypes.primitivedata import ObjectIdentifier
+from bacpypes.basetypes import CharacterString
 
 from ObjectList import ObjectList
 
@@ -12,6 +13,30 @@ class Device:
         self.source = device_source
         self.bacnet_adapter = bacnet_adapter
         self.object_list = None
+        self.name = None
+        # now lets get the device name from the device obj
+        self._get_device_info()
+
+    def _get_device_info(self):
+        request = ReadPropertyRequest(
+            destination=self.source,
+            objectIdentifier=self.id,
+            propertyIdentifier='objectName'
+        )
+        iocb = IOCB(request)
+        iocb.add_callback(self._got_object_name)
+        self.bacnet_adapter.request_io(iocb)
+
+    def _got_object_name(self, iocb):
+        if iocb.ioError:
+            print("error (%s) when attempting to get objectName of device (%s %s)" % (str(iocb.ioError), self.id))
+        else:
+            apdu = iocb.ioResponse
+            if not isinstance(apdu, ReadPropertyACK):
+                print('response was not ReadPropertyACK as expected')
+                return
+            self.name = apdu.propertyValue.cast_out(CharacterString)
+
 
     def get_object_list(self):
         request = ReadPropertyRequest(
