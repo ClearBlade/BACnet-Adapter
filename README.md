@@ -3,7 +3,7 @@ This adapter is written with python, and provides a simple interface between BAC
 
 # Dependencies
 - Python 2.7
-- ClearBlade Python SDK (instructions [here](https://github.com/ClearBlade/Python-API))
+- ClearBlade Python SDK v1.0 (instructions [here](https://github.com/ClearBlade/ClearBlade-Python-SDK/tree/v1.0))
 - Eclipse Paho Python SDK (instructions [here](https://eclipse.org/paho/clients/python/))
 - BACpypes BACnet Python SDK (instructions [here](http://bacpypes.readthedocs.io/en/latest/?badge=latest))
 
