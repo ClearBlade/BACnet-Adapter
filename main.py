@@ -5,14 +5,14 @@ from bacpypes.service.device import LocalDeviceObject
 
 import sys, argparse
 
-ADAPTER_VERSION = "1.0"
+ADAPTER_VERSION = "1.1"
 
 # When using bacpypes, we are required to register a local device to be able to communicate with other BACnet devices.
 # A name/description of the local BACnet device being registered
 LOCAL_BACNET_DEVICE_OBJECT_NAME = "ClearBlade BACnet Adapter v" + ADAPTER_VERSION
 # A unique identifier for this device on the BACnet network. (Note, you may need to change this depending on your BACnet
 # device number scheme to avoid conflicts)
-LOCAL_BACNET_DEVICE_OBJECT_IDENTIFIER = 599
+LOCAL_BACNET_DEVICE_OBJECT_IDENTIFIER = 8001
 # The max size of an Application Layer Protocol Data Units accepted by our local BACnet device. This is in bytes,
 # and the max value for BACnet/IP is 1476 (which is our default)
 LOCAL_BACNET_DEVICE_MAX_APDU_LENGTH_ACCEPTED = 1476
@@ -35,9 +35,11 @@ def _parse_args(argv):
     parser.add_argument('--systemSecret', required=True, help='The System Secret of the ClearBlade platform the BACnet adapter will connect to. ex. B6B99D8E0B98EEBDD2D099A9F863')
     parser.add_argument('--deviceName', required=True, help='The name of the device, defined within the devices table of the ClearBlade platform, representing the BACnet Adapter. ex. BACNetAdapter')
     parser.add_argument('--activeKey', required=True, help='The Active Key, defined within the devices table of the ClearBlade platform, corresponding to the BACnet Adapter. ex. my_super_secret_key')
-    parser.add_argument('--ipAddress', required=True, help='The ip address of the device this adapter is running on (must be an IP address, and not localhost or domain) ex. 192.168.0.19')
+    parser.add_argument('--ipAddress', required=True, help='The ip address of the device this adapter is running on, including the subnet mask (must be an IP address, and not localhost or domain) ex. 192.168.0.19/24')
     parser.add_argument('--whoisInterval', dest="whoisInterval", default=120, type=int, help='The amount of time to wait between each successive scan for BACnet devices. The default is 120 (2 minutes)')
     parser.add_argument('--platformUrl', dest="platformURL", default="https://platform.clearblade.com", help='The url of the ClearBlade platform the BACnet adapter will connect to. The default is https://platform.clearblade.com. ex. https://<my custom domain>.clearblade.com')
+    parser.add_argument('--upperDeviceIdLimit', default=None, type=int, help='The upper device id limit of BACnet devices to poll for, defaults to none, which will poll for all BACnet devices on the network.')
+    parser.add_argument('--lowerDeviceIdLimit', default=None, type=int, help='The lower device id limit of BACnet devices to poll for, defaults to none, which will poll for all BACnet devices on the network.')
 
     return vars(parser.parse_args(args=argv[1:]))
 
@@ -51,7 +53,7 @@ this_device = LocalDeviceObject(
     vendorIdentifier=LOCAL_BACNET_DEVICE_VENDOR_IDENTIFIER
 )
 
-adapter = BACnetAdapter(this_device, args['ipAddress'] + "/24", args)
+adapter = BACnetAdapter(this_device, args['ipAddress'], args)
 adapter.start()
 
 services_supported = adapter.get_services_supported()
