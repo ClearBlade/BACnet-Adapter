@@ -7,7 +7,8 @@ class PropertyList:
     def __init__(self, list_of_props, object, device, bacnet_adapter):
         self.list_of_props = []
         for prop in list_of_props:
-            if isinstance(prop, basestring):
+            # if isinstance(prop, basestring):
+            if isinstance(prop, object):
                 datatype = get_datatype(object[0], prop)
                 if not datatype:
                     print("no datatype found for prop: %s", prop)

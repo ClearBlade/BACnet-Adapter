@@ -29,7 +29,8 @@ class Device:
 
     def _got_object_name(self, iocb):
         if iocb.ioError:
-            print("error (%s) when attempting to get objectName of device (%s %s)" % (str(iocb.ioError), self.id))
+            # print("error (%s) when attempting to get objectName of device (%s %s)" % (str(iocb.ioError), self.id))
+            print("error (%s) when attempting to get objectName of device (%s %s)" % (str(iocb.ioError), iocb.pduSource, iocb.pduSource))
         else:
             apdu = iocb.ioResponse
             if not isinstance(apdu, ReadPropertyACK):

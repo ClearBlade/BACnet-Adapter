@@ -58,6 +58,6 @@ class ObjectList:
                 return
             props_obj = decode_multiple_properties(apdu.listOfReadAccessResults)
             # add obj and device info to the props obj, we want to send this to the platform
-            print props_obj
+            print(props_obj)
 
             self.bacnet_adapter.send_props_to_platform(self.device, object_id, props_obj)
