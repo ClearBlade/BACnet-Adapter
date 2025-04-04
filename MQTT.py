@@ -6,7 +6,7 @@ from clearblade import Messaging
 class MQTT:
     def __init__(self, credentials):
         self.systemKey = credentials['systemKey']
-        self.systemSecret = credentials['systemSecret']
+        self.systemSecret = 'system_key_not_used'
         self.username = credentials['deviceName']
         self.password = credentials['activeKey']
         self.platformURL = credentials['platformURL']

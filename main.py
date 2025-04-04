@@ -26,13 +26,12 @@ LOCAL_BACNET_DEVICE_VENDOR_IDENTIFIER = 5
 
 credentials = {}
 
-print "BACnet-Adapter v" + ADAPTER_VERSION
+print("BACnet-Adapter v" + ADAPTER_VERSION)
 
 
 def _parse_args(argv):
     parser = argparse.ArgumentParser(description='BACnetAdapter')
     parser.add_argument('--systemKey', required=True, help='The System Key of the ClearBlade platform the BACnet adapter will connect to. ex. b6b99d8e0bc6e486b2a9abe294cb01')
-    parser.add_argument('--systemSecret', required=True, help='The System Secret of the ClearBlade platform the BACnet adapter will connect to. ex. B6B99D8E0B98EEBDD2D099A9F863')
     parser.add_argument('--deviceName', required=True, help='The name of the device, defined within the devices table of the ClearBlade platform, representing the BACnet Adapter. ex. BACNetAdapter')
     parser.add_argument('--activeKey', required=True, help='The Active Key, defined within the devices table of the ClearBlade platform, corresponding to the BACnet Adapter. ex. my_super_secret_key')
     parser.add_argument('--ipAddress', required=True, help='The ip address of the device this adapter is running on, including the subnet mask (must be an IP address, and not localhost or domain) ex. 192.168.0.19/24')

@@ -21,14 +21,14 @@ class BACnetAdapter(BIPSimpleApplication):
         self.mqtt = None
         self.cb_device_client = None
         self.bacnet_devices = None
-	self.bacnet_sensors = None
+        self.bacnet_sensors = None
         self._init_cb()
 
     def _init_cb(self):
         # first authenticate to CB using device auth
         cb_auth = auth.Auth()
         if self.cb_device_client is None:
-            self.cb_device_client = Client.DeviceClient(self.credentials['systemKey'], self.credentials['systemSecret'], self.credentials['deviceName'], self.credentials['activeKey'], self.credentials['platformURL'])
+            self.cb_device_client = Client.DeviceClient(self.credentials['systemKey'], 'system_key_not_used', self.credentials['deviceName'], self.credentials['activeKey'], self.credentials['platformURL'])
             cb_auth.Authenticate(self.cb_device_client)
         # init cb mqtt
         # if self.mqtt is None:
@@ -37,12 +37,12 @@ class BACnetAdapter(BIPSimpleApplication):
         if self.bacnet_devices is None:
             self.bacnet_devices = BACnetDevices(self.cb_device_client, self)
         # init bacnet sensors (comes from cb devices table)
-	if self.bacnet_sensors is None:
-	    self.bacnet_sensors = BACnetSensors()
+        if self.bacnet_sensors is None:
+            self.bacnet_sensors = BACnetSensors()
         # also init bacnet sensor profiles
 
     def do_IAmRequest(self, apdu):
-	self.bacnet_devices.got_new_device_who_is_response(apdu)
+        self.bacnet_devices.got_new_device_who_is_response(apdu)
 
     def send_value_to_platform(self, device, obj, props):
         obj_to_send = {
@@ -56,13 +56,13 @@ class BACnetAdapter(BIPSimpleApplication):
         }
         try:
             msg = json.dumps(obj_to_send, ensure_ascii=False, default=json_serial)
-            print msg
+            print(msg)
             self.mqtt.PublishTopic("bacnet/in", str(msg))
         except Exception as e:
-            print e
+            print(e)
 
     def start(self):
-        print "in start"
+        print("in start")
         #self.who_is(self.low_limit, self.high_limit, Address("10.16.163.20"))
         # todo - here we will want to loop through each device we have, and kick off getting all objects and properties for the device
         #timer = threading.Timer(self.interval, self.start)

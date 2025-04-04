@@ -47,9 +47,9 @@ class ObjectList:
         self.bacnet_adapter.request_io(iocb)
 
     def _got_properties_for_object(self, iocb, object_id):
-        print('info for obj %s %s', object_id)
+        print(f'info for obj {object_id}')
         if iocb.ioError:
-            print("error getting property list: %s", str(iocb.ioError))
+            print(f"error getting property list: {str(iocb.ioError)}")
             return
         else:
             apdu = iocb.ioResponse
@@ -58,6 +58,6 @@ class ObjectList:
                 return
             props_obj = decode_multiple_properties(apdu.listOfReadAccessResults)
             # add obj and device info to the props obj, we want to send this to the platform
-            print props_obj
+            print(props_obj)
 
             self.bacnet_adapter.send_props_to_platform(self.device, object_id, props_obj)
