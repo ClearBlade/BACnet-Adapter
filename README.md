@@ -7,6 +7,39 @@ This adapter is written with python, and provides a simple interface between BAC
 - Eclipse Paho Python SDK (instructions [here](https://eclipse.org/paho/clients/python/))
 - BACpypes BACnet Python SDK (instructions [here](http://bacpypes.readthedocs.io/en/latest/?badge=latest))
 
+# Build and Release
+## Development Installation
+To install the package in development mode:
+```bash
+pip install -e .
+```
+
+## Building Distribution Packages
+To build distribution packages (source distribution and wheel):
+```bash
+python setup.py sdist bdist_wheel
+```
+This will create:
+- A source distribution in `dist/bacnet-adapter-1.1.0.tar.gz`
+- A wheel distribution in `dist/bacnet_adapter-1.1.0-py3-none-any.whl`
+
+## Publishing to PyPI
+To publish the package to PyPI, you'll need:
+1. A PyPI account
+2. The `twine` package installed (`pip install twine`)
+3. Your PyPI credentials configured
+
+Then run:
+```bash
+twine upload dist/*
+```
+
+## Development Dependencies
+For development, you'll need additional packages:
+```bash
+pip install -r requirements-dev.txt
+```
+
 # Usage
 Before starting the adapter you will need to add an entry to the device table of the system you want to use. When creating the device make sure it is enabled, and allow key authorization. Finally be sure to set a value for the `active_key` column after creation. You will need this, and th device name when starting the adapter.
 

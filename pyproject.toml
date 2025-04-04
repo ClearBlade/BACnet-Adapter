@@ -1,0 +1,23 @@
+[build-system]
+requires = ["setuptools>=45", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "bacnet-adapter"
+version = "1.1.0"
+description = "A BACnet adapter that provides an interface between BACnet devices and MQTT messaging via the ClearBlade platform"
+readme = "README.md"
+requires-python = ">=3.7"
+license = {text = "MIT"}
+authors = [
+    {name = "ClearBlade", email = "support@clearblade.com"}
+]
+dependencies = [
+    "clearblade-python-sdk>=1.0.0",
+    "paho-mqtt>=1.6.1",
+    "bacpypes>=3.0.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/ClearBlade/BACnet-Adapter"
+Repository = "https://github.com/ClearBlade/BACnet-Adapter.git" 
