@@ -7,7 +7,7 @@ from BACnetDevices import BACnetDevices
 from BACnetSensors import BACnetSensors
 from Device import Device
 from MQTT import MQTT
-from clearblade import auth, Client
+from clearblade.ClearBladeCore import System, cbLogs, Developer
 
 
 class BACnetAdapter(BIPSimpleApplication):
@@ -26,16 +26,20 @@ class BACnetAdapter(BIPSimpleApplication):
 
     def _init_cb(self):
         # first authenticate to CB using device auth
-        cb_auth = auth.Auth()
         if self.cb_device_client is None:
-            self.cb_device_client = Client.DeviceClient(self.credentials['systemKey'], 'system_key_not_used', self.credentials['deviceName'], self.credentials['activeKey'], self.credentials['platformURL'])
-            cb_auth.Authenticate(self.cb_device_client)
+            system = System(self.credentials["systemKey"],
+                    self.credentials["systemSecret"], url=self.credentials["platformURL"])
+            self.cb_device_client = system.Device(self.credentials["deviceName"], self.credentials["activeKey"])
+            self.cb_device_client.authorize(self.credentials["activeKey"])
+
         # init cb mqtt
         # if self.mqtt is None:
         #     self.mqtt = MQTT(self.credentials)
+
         # init bacnet devices (comes from cb collection)
         if self.bacnet_devices is None:
-            self.bacnet_devices = BACnetDevices(self.cb_device_client, self)
+            self.bacnet_devices = BACnetDevices(self.cb_device_client, self, system)
+
         # init bacnet sensors (comes from cb devices table)
         if self.bacnet_sensors is None:
             self.bacnet_sensors = BACnetSensors()
@@ -46,13 +50,9 @@ class BACnetAdapter(BIPSimpleApplication):
 
     def send_value_to_platform(self, device, obj, props):
         obj_to_send = {
-            'device': {
-                'id': device.id,
-                'name': device.name,
-                'source': device.source
-            },
-            'object': obj,
-            'properties': props
+            "device": {"id": device.id, "name": device.name, "source": device.source},
+            "object": obj,
+            "properties": props,
         }
         try:
             msg = json.dumps(obj_to_send, ensure_ascii=False, default=json_serial)
@@ -63,14 +63,14 @@ class BACnetAdapter(BIPSimpleApplication):
 
     def start(self):
         print("in start")
-        #self.who_is(self.low_limit, self.high_limit, Address("10.16.163.20"))
+        # self.who_is(self.low_limit, self.high_limit, Address("10.16.163.20"))
         # todo - here we will want to loop through each device we have, and kick off getting all objects and properties for the device
-        #timer = threading.Timer(self.interval, self.start)
-        #timer.daemon = True
-        #timer.start()
+        # timer = threading.Timer(self.interval, self.start)
+        # timer.daemon = True
+        # timer.start()
 
 
 def json_serial(obj):
     """JSON serializer for objects not serializable by default json code"""
-    #if isinstance(obj, TimeStamp):
+    # if isinstance(obj, TimeStamp):
     return str(obj)

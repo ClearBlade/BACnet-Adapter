@@ -3,7 +3,7 @@ This adapter is written with python, and provides a simple interface between BAC
 
 # Dependencies
 - Python 3.x
-- ClearBlade Python SDK v1.0 (instructions [here](https://github.com/ClearBlade/ClearBlade-Python-SDK/tree/v1.0))
+- ClearBlade Python SDK v2.4.4 (instructions [here](https://github.com/ClearBlade/ClearBlade-Python-SDK/))
 - Eclipse Paho Python SDK (instructions [here](https://eclipse.org/paho/clients/python/))
 - BACpypes BACnet Python SDK (instructions [here](http://bacpypes.readthedocs.io/en/latest/?badge=latest))
 
@@ -12,26 +12,6 @@ This adapter is written with python, and provides a simple interface between BAC
 To install the package in development mode:
 ```bash
 pip install -e .
-```
-
-## Building Distribution Packages
-To build distribution packages (source distribution and wheel):
-```bash
-python setup.py sdist bdist_wheel
-```
-This will create:
-- A source distribution in `dist/bacnet-adapter-1.1.0.tar.gz`
-- A wheel distribution in `dist/bacnet_adapter-1.1.0-py3-none-any.whl`
-
-## Publishing to PyPI
-To publish the package to PyPI, you'll need:
-1. A PyPI account
-2. The `twine` package installed (`pip install twine`)
-3. Your PyPI credentials configured
-
-Then run:
-```bash
-twine upload dist/*
 ```
 
 ## Development Dependencies

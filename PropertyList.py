@@ -7,10 +7,10 @@ class PropertyList:
     def __init__(self, list_of_props, object, device, bacnet_adapter):
         self.list_of_props = []
         for prop in list_of_props:
-            if isinstance(prop, str):
+            if isinstance(prop, object):
                 datatype = get_datatype(object[0], prop)
                 if not datatype:
-                    print(f"no datatype found for prop: {prop}")
+                    print("no datatype found for prop: %s", prop)
                     pass
                 else:
                     self.list_of_props.append(prop)
@@ -49,4 +49,3 @@ class PropertyList:
 
     def send_props_to_cb_platform(self):
         self.bacnet_adapter.send_props_to_platform(self.device, self.object, self.prop_values)
-

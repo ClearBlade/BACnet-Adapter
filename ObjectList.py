@@ -47,9 +47,9 @@ class ObjectList:
         self.bacnet_adapter.request_io(iocb)
 
     def _got_properties_for_object(self, iocb, object_id):
-        print(f'info for obj {object_id}')
+        print('info for obj %s', object_id)
         if iocb.ioError:
-            print(f"error getting property list: {str(iocb.ioError)}")
+            print("error getting property list: %s", str(iocb.ioError))
             return
         else:
             apdu = iocb.ioResponse
