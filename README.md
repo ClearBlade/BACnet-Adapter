@@ -8,6 +8,15 @@ This adapter is written with python, and provides a simple interface between BAC
 - BACpypes BACnet Python SDK (instructions [here](http://bacpypes.readthedocs.io/en/latest/?badge=latest))
 
 # Build and Release
+
+## Python Virtual Environment
+./bin/python3 main.py --systemKey e096d7fe0cd2e790bbeaf98fca30 --deviceName bacnet-adapter --activeKey y1q48r3Rm8EPSS36b4m8C11873 --ipAddress 10.0.0.88 --platformUrl https://demo.clearblade.com
+
+python3 -m venv /path/to/new/virtual/environment
+source /path/to/new/virtual/environment/bin/activate
+/path/to/new/virtual/environment/bin/pip3 install some-python-library
+
+
 ## Development Installation
 To install the package in development mode:
 ```bash

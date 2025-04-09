@@ -10,20 +10,21 @@ from utils import decode_multiple_properties
 
 class ObjectList:
     def __init__(self, list_of_ids, device, bacnet_adapter):
+        print("ObjectList __init__")
         self.object_ids = list_of_ids
         self.device = device
         self.bacnet_adapter = bacnet_adapter
         self.prop_list_for_obj = {}
 
     def get_properties_for_each_object(self):
+        print("ObjectList get_properties_for_each_object")
         for obj in self.object_ids:
             if obj[0] != 'trendLog' and obj[0] != 'device':
                 self._get_prop_for_obj(obj)
 
     def _get_prop_for_obj(self, obj_id):
-
+        print("ObjectList _get_prop_for_obj")
         props_to_get = ['objectName', 'description', 'presentValue', 'units']
-
         prop_ref_list = []
 
         for prop in props_to_get:
@@ -47,6 +48,7 @@ class ObjectList:
         self.bacnet_adapter.request_io(iocb)
 
     def _got_properties_for_object(self, iocb, object_id):
+        print("ObjectList _got_properties_for_object")
         print('info for obj %s', object_id)
         if iocb.ioError:
             print("error getting property list: %s", str(iocb.ioError))

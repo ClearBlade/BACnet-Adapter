@@ -5,6 +5,7 @@ from bacpypes.apdu import ReadPropertyRequest, ReadPropertyACK
 
 class PropertyList:
     def __init__(self, list_of_props, object, device, bacnet_adapter):
+        print("PropertyList __init__")
         self.list_of_props = []
         for prop in list_of_props:
             if isinstance(prop, object):
@@ -20,10 +21,12 @@ class PropertyList:
         self.prop_values = {}
 
     def get_values_for_properties(self):
+        print("PropertyList get_values_for_properties")
         for prop in self.list_of_props:
             self._get_value_for_prop(prop)
 
     def _get_value_for_prop(self, prop):
+        print("PropertyList _get_value_for_prop")
         request = ReadPropertyRequest(
             destination=self.device.source,
             objectIdentifier=self.object,
@@ -34,6 +37,7 @@ class PropertyList:
         self.bacnet_adapter.request_io(iocb)
 
     def _got_prop(self, iocb, prop):
+        print("PropertyList _got_prop")
         if iocb.ioError:
             self.prop_values[prop] = str(iocb.ioError)
         elif iocb.ioResponse:
@@ -48,4 +52,5 @@ class PropertyList:
                 self.send_props_to_cb_platform()
 
     def send_props_to_cb_platform(self):
+        print("PropertyList send_props_to_cb_platform")
         self.bacnet_adapter.send_props_to_platform(self.device, self.object, self.prop_values)

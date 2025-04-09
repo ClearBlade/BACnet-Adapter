@@ -2,10 +2,10 @@ from setuptools import setup, find_packages
 
 setup(
     name="bacnet-adapter",
-    version="1.1.0",
+    version="1.2.0",
     packages=find_packages(),
     install_requires=[
-        "clearblade-python-sdk>=1.0.0",
+        "clearblade-python-sdk>=v2.4.4",
         "paho-mqtt>=1.6.1",
         "bacpypes>=3.0.0",
     ],

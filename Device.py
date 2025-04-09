@@ -9,25 +9,30 @@ from ObjectList import ObjectList
 
 class Device:
     def __init__(self, device_identifier, device_source, bacnet_adapter):
+        print("Device __init__")
         self.id = device_identifier
         self.source = device_source
         self.bacnet_adapter = bacnet_adapter
         self.object_list = None
         self.name = None
+
         # now lets get the device name from the device obj
         self._get_device_info()
 
     def _get_device_info(self):
+        print("Device _get_device_info")
         request = ReadPropertyRequest(
             destination=self.source,
             objectIdentifier=self.id,
             propertyIdentifier='objectName'
         )
+
         iocb = IOCB(request)
         iocb.add_callback(self._got_object_name)
         self.bacnet_adapter.request_io(iocb)
 
     def _got_object_name(self, iocb):
+        print("Device _got_object_name")
         if iocb.ioError:
             print("error (%s) when attempting to get objectName of device (%s %s)" % (str(iocb.ioError), iocb.pduSource, iocb.pduSource))
         else:
@@ -39,6 +44,7 @@ class Device:
 
 
     def get_object_list(self):
+        print("Device get_object_list")
         request = ReadPropertyRequest(
             destination=self.source,
             objectIdentifier=self.id,
@@ -50,6 +56,7 @@ class Device:
         self.bacnet_adapter.request_io(iocb)
 
     def _got_object_list(self, iocb):
+        print("Device _got_object_list")
         if iocb.ioError:
             print("error (%s) when attempting to get object-list of device (%s)", str(iocb.ioError), self.id)
         elif iocb.ioResponse:

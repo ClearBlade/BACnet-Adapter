@@ -1,22 +1,34 @@
+from clearblade.ClearBladeCore import System, cbLogs, Developer
 
-
-from clearblade import Messaging
 
 
 class MQTT:
     def __init__(self, credentials):
+        print("MQTT __init__")
         self.systemKey = credentials['systemKey']
-        self.systemSecret = 'system_key_not_used'
+        self.systemSecret = 'system_secret_not_used'
         self.username = credentials['deviceName']
         self.password = credentials['activeKey']
         self.platformURL = credentials['platformURL']
+        self.deviceName = credentials['deviceName']
+        self.activeKey = credentials['activeKey']
 
         #Connect to MQTT
         self.messaging_client = self.Connect()
 
     def Connect(self):
-        messaging_client = Messaging.Messaging(device)
-        messaging_client.InitializeMQTT()
+        print("MQTT Connect")
+        system = System(self.systemKey, 'system_secret_not_used', url=self.platformURL)
+
+        #Authenticate using device auth
+        device = system.Device(self.deviceName, self.activeKey)
+
+        # Use device to access a messaging client
+        messaging_client = system.Messaging(device)
+
+        # Connect to MQTT
+        messaging_client.connect()
+
         return messaging_client
 
     def PublishTopic(self, topic, message):

@@ -1,3 +1,4 @@
-clearblade-python-sdk>=1.0.0
+clearblade>=2.4.0
 paho-mqtt>=1.6.1
-bacpypes>=3.0.0 
+bacpypes>=0.19.0 
+pyasyncore>=1.0.4

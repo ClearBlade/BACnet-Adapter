@@ -1,17 +1,15 @@
 import threading, json
-from bacpypes.app import BIPSimpleApplication, BIPForeignApplication
+from bacpypes.app import BIPSimpleApplication
 from bacpypes.apdu import WhoIsRequest
 from bacpypes.pdu import GlobalBroadcast, Address
 
-from BACnetDevices import BACnetDevices
-from BACnetSensors import BACnetSensors
 from Device import Device
 from MQTT import MQTT
-from clearblade.ClearBladeCore import System, cbLogs, Developer
 
 
 class BACnetAdapter(BIPSimpleApplication):
     def __init__(self, device, hostname, args):
+        print("BACnetAdapter __init__")
         BIPSimpleApplication.__init__(self, device, hostname)
         self.who_is_request = None
         self.credentials = args
@@ -19,40 +17,35 @@ class BACnetAdapter(BIPSimpleApplication):
         self.low_limit = args["lowerDeviceIdLimit"]
         self.high_limit = args["upperDeviceIdLimit"]
         self.mqtt = None
-        self.cb_device_client = None
-        self.bacnet_devices = None
-        self.bacnet_sensors = None
-        self._init_cb()
+        # todo - create our devices with the provided IPs in the device-config.json file
+        # during device creation we should also get some info on each device, mainly the objectName on the device object
 
-    def _init_cb(self):
-        # first authenticate to CB using device auth
-        if self.cb_device_client is None:
-            system = System(self.credentials["systemKey"],
-                    self.credentials["systemSecret"], url=self.credentials["platformURL"])
-            self.cb_device_client = system.Device(self.credentials["deviceName"], self.credentials["activeKey"])
-            self.cb_device_client.authorize(self.credentials["activeKey"])
+    def request(self, apdu):
+        print("BACnetAdapter request")
+        if isinstance(apdu, WhoIsRequest):
+            self.who_is_request = apdu
 
-        # init cb mqtt
-        # if self.mqtt is None:
-        #     self.mqtt = MQTT(self.credentials)
-
-        # init bacnet devices (comes from cb collection)
-        if self.bacnet_devices is None:
-            self.bacnet_devices = BACnetDevices(self.cb_device_client, self, system)
-
-        # init bacnet sensors (comes from cb devices table)
-        if self.bacnet_sensors is None:
-            self.bacnet_sensors = BACnetSensors()
-        # also init bacnet sensor profiles
+        BIPSimpleApplication.request(self, apdu)
 
     def do_IAmRequest(self, apdu):
-        self.bacnet_devices.got_new_device_who_is_response(apdu)
+        print("do_IAmRequest")
+        if not self.who_is_request:
+            return
+        else:
+            print(apdu.iAmDeviceIdentifier)
+            device = Device(apdu.iAmDeviceIdentifier, apdu.pduSource, self)
+            device.get_object_list()
 
-    def send_value_to_platform(self, device, obj, props):
+    def send_props_to_platform(self, device, obj, props):
+        print("send_props_to_platform")
         obj_to_send = {
-            "device": {"id": device.id, "name": device.name, "source": device.source},
-            "object": obj,
-            "properties": props,
+            'device': {
+                'id': device.id,
+                'name': device.name,
+                'source': device.source
+            },
+            'object': obj,
+            'properties': props
         }
         try:
             msg = json.dumps(obj_to_send, ensure_ascii=False, default=json_serial)
@@ -62,15 +55,19 @@ class BACnetAdapter(BIPSimpleApplication):
             print(e)
 
     def start(self):
-        print("in start")
-        # self.who_is(self.low_limit, self.high_limit, Address("10.16.163.20"))
+        print("start")
+        if self.mqtt is None:
+            self.mqtt = MQTT(self.credentials)
+
+        self.who_is(self.low_limit, self.high_limit, Address("10.16.163.20"))
         # todo - here we will want to loop through each device we have, and kick off getting all objects and properties for the device
-        # timer = threading.Timer(self.interval, self.start)
-        # timer.daemon = True
-        # timer.start()
+        timer = threading.Timer(self.interval, self.start)
+        timer.daemon = True
+        timer.start()
 
 
 def json_serial(obj):
+    print("json_serial")
     """JSON serializer for objects not serializable by default json code"""
-    # if isinstance(obj, TimeStamp):
+    #if isinstance(obj, TimeStamp):
     return str(obj)
